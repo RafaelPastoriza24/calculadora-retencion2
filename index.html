@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Retención</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png" type="image/png">
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding: 2em;
+            background-color: #f9f9f9;
+        }
+        input, button {
+            font-size: 1.2em;
+            padding: 0.7em;
+            margin: 0.5em;
+            width: 80%;
+            max-width: 300px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+        }
+        #installBtn {
+            margin-top: 2em;
+            display: none;
+            background-color: #007bff;
+        }
+        #resultado {
+            font-size: 1.2em;
+            margin-top: 20px;
+            font-weight: bold;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Retención</h1>
+    <label for="monto">Monto total de la factura (en Bs):</label><br>
+    <input type="number" id="monto" placeholder="Ej: 1000" /><br>
+    <button onclick="calcular()">Calcular Retención</button>
+    <div id="resultado"></div>
+    <button id="installBtn">Instalar esta aplicación</button>
+
+    <script>
+        function calcular() {
+            const monto = parseFloat(document.getElementById("monto").value);
+            if (!isNaN(monto)) {
+                const iva = monto * 0.16;
+                const retencion = iva * 0.75;
+                const total = monto - retencion;
+                document.getElementById("resultado").innerHTML =
+                    `IVA (16%): Bs ${iva.toFixed(2)}\n` +
+                    `Retención (75% del IVA): Bs ${retencion.toFixed(2)}\n\n` +
+                    `Monto a pagar: Bs ${total.toFixed(2)}`;
+            }
+        }
+
+        let deferredPrompt;
+        const installBtn = document.getElementById("installBtn");
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'inline-block';
+        });
+
+        installBtn.addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('App instalada');
+                    }
+                    deferredPrompt = null;
+                    installBtn.style.display = 'none';
+                });
+            }
+        });
+
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            installBtn.style.display = 'none';
+        }
+    </script>
+    <script src="sw.js"></script>
+</body>
+</html>

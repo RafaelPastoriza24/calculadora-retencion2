@@ -1,0 +1,16 @@
+
+{
+  "name": "Calculadora de Retención",
+  "short_name": "Retención",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "description": "Calcula el monto de retención de IVA.",
+  "icons": [
+    {
+      "src": "icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}
